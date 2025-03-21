@@ -1,5 +1,6 @@
 package com.dengage.dengageecommercetest
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,19 +33,24 @@ class CartFragment : Fragment() {
             CartManager.removeProduct(product)
             updateTotal()
             adapter.updateItems(CartManager.getItems())
+            (activity as? MainActivity)?.updateCartBadge(CartManager.getTotalItemCount())
         }
         recyclerView.adapter = adapter
 
         checkoutButton.setOnClickListener {
-            startActivity(Intent(context, CheckoutActivity::class.java))
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, CheckoutFragment.newInstance())
+                .addToBackStack(null) // so user can press back
+                .commit()
         }
 
         updateTotal()
         return view
     }
 
+    @SuppressLint("DefaultLocale")
     private fun updateTotal() {
-        val total = CartManager.getItems().sumByDouble { it.product.price * it.quantity }
+        val total = CartManager.getItems().sumOf { it.product.price * it.quantity }
         totalTextView.text = String.format("Total: $%.2f", total)
         checkoutButton.isEnabled = CartManager.getItems().isNotEmpty()
     }
@@ -68,6 +74,7 @@ class CartAdapter(
         return CartViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n", "DefaultLocale")
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         val cartItem = items[position]
         val imageResId = holder.itemView.context.resources.getIdentifier(

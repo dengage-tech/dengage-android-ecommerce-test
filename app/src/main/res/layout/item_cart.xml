@@ -17,7 +17,7 @@
             android:id="@+id/cartItemImage"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             android:contentDescription="@string/product_image" />
 
         <TextView
@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/cartItemImage"
             android:layout_marginStart="16dp"
+            android:textSize="13sp"
             android:textAppearance="?attr/textAppearanceSubtitle1"
             android:textStyle="bold" />
 

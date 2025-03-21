@@ -2,6 +2,7 @@ package com.dengage.dengageecommercetest
 
 import android.app.Application
 import android.content.Context
+import com.dengage.dengageecommercetest.data.CartManager
 import com.dengage.geofence.DengageGeofence
 //import com.dengage.hms.DengageHmsManager
 import com.dengage.sdk.Dengage
@@ -9,13 +10,15 @@ import com.dengage.sdk.data.remote.api.DeviceConfigurationPreference
 import com.dengage.sdk.data.remote.api.NotificationDisplayPriorityConfiguration
 import com.dengage.sdk.util.DengageLifecycleTracker
 
-// app.dengage.com: hasnain new test app
-const val FIREBASE_APP_INTEGRATION_KEY = "9MBNB5X2IWf8oBfxaNjs5kWcmObGwc8g6bmJcqS2rprtPSJgAThZL_s_l_n1nypZLOoQApPKMzfFMoJpU_s_l_BQk9YpJMk3mn05bpF3_p_l_1XjtNC1jvrEkEZ3D8h5VmUz0U4xmiI0ycs7_s_l_BJ20fOwTQsOq5OXRA_e_q__e_q_"
+// dev-app.dengage.com: hasnain new test app
+const val FIREBASE_APP_INTEGRATION_KEY = "o5r8xJa8eyBUGSmwXdskiIx0Um1oacEGoowX1_p_l_chY5_p_l_cVGTBC4m4jWgohN6vS3X3FG1cUbmToIAyVQfXAFDShKgqChrmLTMwnae_s_l_mqgXMNgkIG2gsAkOidM1znE1lIypsr_p_l_p9VrPR6OKSDdvF_s_l_3krw_e_q__e_q_"
 
 class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        CartManager.init(this)
 
         registerActivityLifecycleCallbacks(DengageLifecycleTracker())
 

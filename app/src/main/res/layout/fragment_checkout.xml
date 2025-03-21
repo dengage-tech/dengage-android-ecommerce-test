@@ -23,8 +23,9 @@
         android:id="@+id/btnPlaceOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Place Order"
+        android:text="@string/place_order"
         style="@style/Widget.MaterialComponents.Button"
+        android:layout_marginBottom="80dp"
         android:layout_marginTop="16dp" />
 
 </LinearLayout>

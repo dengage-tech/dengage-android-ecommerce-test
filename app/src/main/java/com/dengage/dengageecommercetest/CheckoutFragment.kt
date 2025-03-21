@@ -1,51 +1,65 @@
 package com.dengage.dengageecommercetest
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import androidx.appcompat.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
-import androidx.recyclerview.widget.RecyclerView
-import com.dengage.dengageecommercetest.data.Product
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.dengage.dengageecommercetest.data.CartManager
 
-class CheckoutActivity : AppCompatActivity() {
+class CheckoutFragment : Fragment() {
+
     private lateinit var summaryTextView: TextView
     private lateinit var placeOrderButton: Button
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_checkout)
+    companion object {
+        fun newInstance(): CheckoutFragment {
+            return CheckoutFragment()
+        }
+    }
 
-        summaryTextView = findViewById(R.id.textSummary)
-        placeOrderButton = findViewById(R.id.btnPlaceOrder)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_checkout, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        summaryTextView = view.findViewById(R.id.textSummary)
+        placeOrderButton = view.findViewById(R.id.btnPlaceOrder)
 
         displaySummary()
 
         placeOrderButton.setOnClickListener {
             CartManager.clearCart()
-            AlertDialog.Builder(this)
+            AlertDialog.Builder(requireContext())
                 .setTitle("Order Placed")
                 .setMessage("Your order has been placed successfully!")
                 .setPositiveButton("OK") { dialog, _ ->
                     dialog.dismiss()
-                    finish()
+
+                    // 1) Pop all fragments from the back stack
+                    parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+                    // 2) Update cart badge to 0
+                    (activity as? MainActivity)?.updateCartBadge(0)
+
+                    // 3) Optionally switch the bottom nav to Categories tab
+                    (activity as? MainActivity)?.selectCategoryTab()
                 }
                 .show()
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun displaySummary() {
         val items = CartManager.getItems()
         if (items.isEmpty()) {

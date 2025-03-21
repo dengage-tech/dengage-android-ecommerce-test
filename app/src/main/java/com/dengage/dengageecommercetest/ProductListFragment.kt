@@ -1,20 +1,19 @@
 package com.dengage.dengageecommercetest
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.dengage.dengageecommercetest.data.Product
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dengage.dengageecommercetest.data.*
+import com.dengage.sdk.Dengage
 
 class ProductListFragment : Fragment() {
 
@@ -59,5 +58,45 @@ class ProductListFragment : Fragment() {
             }
             recyclerView.adapter = adapter
         }
+        Dengage.setNavigation(
+            activity = activity as AppCompatActivity,
+            screenName = "category"
+        )
+        val data = hashMapOf<String, Any>(
+            "page_type" to "category",
+            "category_id" to categoryId
+        )
+        Dengage.pageView(data)
     }
 }
+
+class ProductAdapter(
+    private val products: List<Product>,
+    private val onItemClick: (Product) -> Unit
+) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+
+    inner class ProductViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        val imageView: ImageView = itemView.findViewById(R.id.productImage)
+        val nameTextView: TextView = itemView.findViewById(R.id.productName)
+        val priceTextView: TextView = itemView.findViewById(R.id.productPrice)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false)
+        return ProductViewHolder(view)
+    }
+
+    @SuppressLint("DefaultLocale", "DiscouragedApi")
+    override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
+        val product = products[position]
+        val imageResId = holder.itemView.context.resources.getIdentifier(
+            product.imageName, "drawable", holder.itemView.context.packageName)
+        holder.imageView.setImageResource(imageResId)
+        holder.nameTextView.text = product.name
+        holder.priceTextView.text = String.format("$%.2f", product.price)
+        holder.itemView.setOnClickListener { onItemClick(product) }
+    }
+
+    override fun getItemCount(): Int = products.size
+}
+

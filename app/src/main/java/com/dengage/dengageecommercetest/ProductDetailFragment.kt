@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
@@ -15,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.dengage.dengageecommercetest.data.*
+import com.dengage.sdk.Dengage
 import com.google.android.material.button.MaterialButton
 
 class ProductDetailFragment : Fragment() {
@@ -63,14 +62,33 @@ class ProductDetailFragment : Fragment() {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         quantitySpinner.adapter = spinnerAdapter
 
+        Dengage.setNavigation(
+            activity = activity as AppCompatActivity,
+            screenName = "product"
+        )
+        val data = hashMapOf<String, Any>(
+            "page_type" to "product",
+            "product_id" to productId
+        )
+        Dengage.pageView(data)
+
         addToCartButton.setOnClickListener {
             val selectedQty = quantitySpinner.selectedItem as Int
             CartManager.addProduct(product, selectedQty)
 
-            // Update cart badge in MainActivity
-            (activity as? MainActivity)?.updateCartBadge(CartManager.getItems().size)
+            (activity as? MainActivity)?.updateCartBadge(CartManager.getTotalItemCount())
+
+            val cartData = hashMapOf<String, Any>(
+                "product_id" to product.id,
+                "product_variant_id" to product.id,
+                "quantity" to selectedQty,
+                "unit_price" to product.price,
+                "discounted_price" to product.price
+            )
+            Dengage.addToCart(cartData)
 
             Toast.makeText(requireContext(), "Added to cart", Toast.LENGTH_SHORT).show()
         }
+
     }
 }

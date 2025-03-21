@@ -14,6 +14,7 @@ import android.graphics.Color
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.dengage.dengageecommercetest.data.CartManager
 
 
 class ProfileFragment : Fragment() {
@@ -110,6 +111,7 @@ class ProfileAdapter(
                 // Clear SharedPreferences and navigate back to LoginActivity
                 val context = holder.itemView.context
                 val prefs = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                CartManager.clearCart()
                 prefs.edit().clear().apply()
                 val intent = Intent(context, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

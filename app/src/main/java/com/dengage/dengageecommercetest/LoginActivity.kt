@@ -23,13 +23,11 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
             val username = usernameEditText.text.toString().trim()
             if (username.isNotEmpty()) {
-                // Save login state (using SharedPreferences similar to UserDefaults)
-                getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-                    .edit() { putBoolean("isLoggedIn", true) }
-                getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-                    .edit() { putString("username", username) }
-                // Navigate to the MainActivity (which hosts your tab navigation)
-                startActivity(Intent(this, MainActivity::class.java))
+                val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                prefs.edit() { putBoolean("isLoggedIn", true) }
+                prefs.edit() { putString("username", username) }
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
                 finish()
             } else {
                 Toast.makeText(this, "Please enter a username", Toast.LENGTH_SHORT).show()

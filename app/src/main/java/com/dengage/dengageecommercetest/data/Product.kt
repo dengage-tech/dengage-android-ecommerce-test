@@ -1,5 +1,11 @@
 package com.dengage.dengageecommercetest.data
 
+import android.content.Context
+import android.content.SharedPreferences
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import androidx.core.content.edit
+
 data class Product(
     val id: Int,
     val name: String,
@@ -70,7 +76,15 @@ object DataProvider {
 data class CartItem(val product: Product, var quantity: Int)
 
 object CartManager {
+    private lateinit var sharedPreferences: SharedPreferences
     private val cartItems = mutableListOf<CartItem>()
+    private val gson = Gson()
+    private const val CART_KEY = "cart_items"
+
+    fun init(context: Context) {
+        sharedPreferences = context.getSharedPreferences("CartPrefs", Context.MODE_PRIVATE)
+        loadCart()
+    }
 
     fun addProduct(product: Product, quantity: Int) {
         val existing = cartItems.find { it.product.id == product.id }
@@ -79,15 +93,37 @@ object CartManager {
         } else {
             cartItems.add(CartItem(product, quantity))
         }
+        saveCart()
     }
 
     fun removeProduct(product: Product) {
         cartItems.removeAll { it.product.id == product.id }
+        saveCart()
     }
 
     fun clearCart() {
         cartItems.clear()
+        saveCart()
     }
 
     fun getItems(): MutableList<CartItem> = cartItems
+
+    fun getTotalItemCount(): Int {
+        return cartItems.sumOf { it.quantity }
+    }
+
+    private fun saveCart() {
+        val json = gson.toJson(cartItems)
+        sharedPreferences.edit() { putString(CART_KEY, json) }
+    }
+
+    private fun loadCart() {
+        val json = sharedPreferences.getString(CART_KEY, null)
+        if (!json.isNullOrEmpty()) {
+            val type = object : TypeToken<MutableList<CartItem>>() {}.type
+            val savedCart: MutableList<CartItem> = gson.fromJson(json, type)
+            cartItems.clear()
+            cartItems.addAll(savedCart)
+        }
+    }
 }

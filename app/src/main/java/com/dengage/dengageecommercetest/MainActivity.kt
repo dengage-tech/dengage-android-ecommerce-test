@@ -1,8 +1,12 @@
 package com.dengage.dengageecommercetest
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.dengage.dengageecommercetest.data.CartManager
+import com.dengage.sdk.Dengage
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -12,6 +16,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Dengage.requestNotificationPermission(this)
+
+        val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val isLoggedIn = prefs.getBoolean("isLoggedIn", false)
+        if (!isLoggedIn) {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_main)
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
@@ -44,6 +60,7 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+        updateCartBadge(CartManager.getTotalItemCount())
 
     }
 
@@ -56,6 +73,10 @@ class MainActivity : AppCompatActivity() {
         } else {
             badge.isVisible = false
         }
+    }
+
+    fun selectCategoryTab() {
+        bottomNavigationView.selectedItemId = R.id.nav_categories
     }
 
 }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.DengageEcommerceTest"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.DengageEcommerceTest">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".CheckoutActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".ProductDetailActivity" />
+        <activity android:name=".ProductListActivity" />
+
+        <service
+            android:name="com.dengage.sdk.push.FcmMessagingService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service> <!-- Hms Messaging Service for handling push messages comes from huawei messaging service -->
+        <receiver
+            android:name=".push.PushNotificationReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.dengage.push.intent.RECEIVE" />
+                <action android:name="com.dengage.push.intent.OPEN" />
+                <action android:name="com.dengage.push.intent.DELETE" />
+                <action android:name="com.dengage.push.intent.ACTION_CLICK" />
+                <action android:name="com.dengage.push.intent.ITEM_CLICK" />
+                <action android:name="com.dengage.push.intent.CAROUSEL_ITEM_CLICK" />
+            </intent-filter>
+        </receiver> <!-- Event api url of Dengage -->
+
+
+        <meta-data
+            android:name="den_event_api_url"
+            android:value="https://dev-push.dengage.com" />
+        <meta-data
+            android:name="den_push_api_url"
+            android:value="https://dev-push.dengage.com" />
+        <meta-data
+            android:name="den_device_id_api_url"
+            android:value="https://magento.232.dengage.shobii.com/rest/" />
+
+        <meta-data
+            android:name="den_in_app_api_url"
+            android:value="https://dev-push.dengage.com" />
+
+        <meta-data
+            android:name="den_geofence_api_url"
+            android:value="https://dev-push.dengage.com/geoapi/" />
+
+        <meta-data
+            android:name="fetch_real_time_in_app_api_url"
+            android:value="https://dev-inapp.lib.dengage.com/" />
+
+    </application>
+
+</manifest>

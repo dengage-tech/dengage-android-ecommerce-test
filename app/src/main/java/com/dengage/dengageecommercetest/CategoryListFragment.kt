@@ -49,6 +49,7 @@ class CategoryAdapter(
     inner class CategoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.categoryImage)
         val nameTextView: TextView = itemView.findViewById(R.id.categoryName)
+        val idTextView: TextView = itemView.findViewById(R.id.categoryId)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
@@ -62,6 +63,7 @@ class CategoryAdapter(
             category.imageName, "drawable", holder.itemView.context.packageName)
         holder.imageView.setImageResource(imageResId)
         holder.nameTextView.text = category.name
+        holder.idTextView.text = category.imageName
         holder.itemView.setOnClickListener { onItemClick(category) }
     }
 

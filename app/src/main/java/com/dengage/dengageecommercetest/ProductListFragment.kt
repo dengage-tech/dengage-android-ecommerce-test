@@ -57,16 +57,17 @@ class ProductListFragment : Fragment() {
                     .commit()
             }
             recyclerView.adapter = adapter
+            Dengage.setNavigation(
+                activity = activity as AppCompatActivity,
+                screenName = category.imageName
+            )
+            val data = hashMapOf<String, Any>(
+                "page_type" to "category",
+                "category_id" to category.imageName
+            )
+            Dengage.pageView(data)
         }
-        Dengage.setNavigation(
-            activity = activity as AppCompatActivity,
-            screenName = "category"
-        )
-        val data = hashMapOf<String, Any>(
-            "page_type" to "category",
-            "category_id" to categoryId
-        )
-        Dengage.pageView(data)
+
     }
 }
 
@@ -78,6 +79,7 @@ class ProductAdapter(
     inner class ProductViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.productImage)
         val nameTextView: TextView = itemView.findViewById(R.id.productName)
+        val idTextView: TextView = itemView.findViewById(R.id.productId)
         val priceTextView: TextView = itemView.findViewById(R.id.productPrice)
     }
 
@@ -93,6 +95,7 @@ class ProductAdapter(
             product.imageName, "drawable", holder.itemView.context.packageName)
         holder.imageView.setImageResource(imageResId)
         holder.nameTextView.text = product.name
+        holder.idTextView.text = product.imageName
         holder.priceTextView.text = String.format("$%.2f", product.price)
         holder.itemView.setOnClickListener { onItemClick(product) }
     }

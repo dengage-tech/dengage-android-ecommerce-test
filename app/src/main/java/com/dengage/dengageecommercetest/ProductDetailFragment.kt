@@ -47,6 +47,7 @@ class ProductDetailFragment : Fragment() {
         val product = DataProvider.getProductById(productId) ?: return
         val productImageView = view.findViewById<ImageView>(R.id.detailProductImage)
         val nameTextView = view.findViewById<TextView>(R.id.detailProductName)
+        val idTextView = view.findViewById<TextView>(R.id.detailProductId)
         val priceTextView = view.findViewById<TextView>(R.id.detailProductPrice)
         val quantitySpinner = view.findViewById<Spinner>(R.id.spinnerQuantity)
         val addToCartButton = view.findViewById<MaterialButton>(R.id.btnAddToCart)
@@ -55,6 +56,7 @@ class ProductDetailFragment : Fragment() {
         val imageResId = resources.getIdentifier(product.imageName, "drawable", requireContext().packageName)
         productImageView.setImageResource(imageResId)
         nameTextView.text = product.name
+        idTextView.text = product.imageName
         priceTextView.text = String.format("$%.2f", product.price)
 
         val quantities = (1..10).toList()
@@ -64,11 +66,11 @@ class ProductDetailFragment : Fragment() {
 
         Dengage.setNavigation(
             activity = activity as AppCompatActivity,
-            screenName = "product"
+            screenName = product.imageName
         )
         val data = hashMapOf<String, Any>(
             "page_type" to "product",
-            "product_id" to productId
+            "product_id" to product.imageName
         )
         Dengage.pageView(data)
 

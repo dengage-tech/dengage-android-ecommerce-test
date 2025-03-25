@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dengage.dengageecommercetest.data.CartManager
+import com.dengage.sdk.Dengage
 
 
 class ProfileFragment : Fragment() {
@@ -39,7 +40,7 @@ class ProfileFragment : Fragment() {
         adapter = ProfileAdapter(userInfo) { field, value ->
             // Allow editing for Email and Phone (not Username)
             if (field != "Username") {
-                showEditDialog(field, value)
+                //showEditDialog(field, value)
             }
         }
         recyclerView.adapter = adapter
@@ -111,6 +112,7 @@ class ProfileAdapter(
                 // Clear SharedPreferences and navigate back to LoginActivity
                 val context = holder.itemView.context
                 val prefs = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                Dengage.setContactKey("")
                 CartManager.clearCart()
                 prefs.edit().clear().apply()
                 val intent = Intent(context, LoginActivity::class.java)

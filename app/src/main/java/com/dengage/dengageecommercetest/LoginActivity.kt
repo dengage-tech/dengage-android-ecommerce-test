@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import com.dengage.sdk.Dengage
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var usernameEditText: EditText
@@ -26,6 +27,7 @@ class LoginActivity : AppCompatActivity() {
                 val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
                 prefs.edit() { putBoolean("isLoggedIn", true) }
                 prefs.edit() { putString("username", username) }
+                Dengage.setContactKey(username)
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()

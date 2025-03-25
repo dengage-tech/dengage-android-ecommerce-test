@@ -11,7 +11,7 @@ import com.dengage.sdk.data.remote.api.NotificationDisplayPriorityConfiguration
 import com.dengage.sdk.util.DengageLifecycleTracker
 
 // dev-app.dengage.com: hasnain new test app
-const val FIREBASE_APP_INTEGRATION_KEY = "o5r8xJa8eyBUGSmwXdskiIx0Um1oacEGoowX1_p_l_chY5_p_l_cVGTBC4m4jWgohN6vS3X3FG1cUbmToIAyVQfXAFDShKgqChrmLTMwnae_s_l_mqgXMNgkIG2gsAkOidM1znE1lIypsr_p_l_p9VrPR6OKSDdvF_s_l_3krw_e_q__e_q_"
+const val FIREBASE_APP_INTEGRATION_KEY = "K2rRYB4Fh_s_l_lbQlmtPyZBglqHB4p0qvfSPVDdofNi_p_l_Axg6PSv_s_l_yIr4JEcGizPXFNUn9baevw6iCqqk9bKCUUqjNHi0_p_l_BImM1wlOfy_s_l_jPxZg9ILxPhTmpunjS4vQ9_s_l_2ep2"
 
 class App : Application() {
 

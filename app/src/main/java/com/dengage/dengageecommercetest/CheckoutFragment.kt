@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.dengage.dengageecommercetest.data.CartManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class CheckoutFragment : Fragment() {
 
@@ -53,7 +54,7 @@ class CheckoutFragment : Fragment() {
                     (activity as? MainActivity)?.updateCartBadge(0)
 
                     // 3) Optionally switch the bottom nav to Categories tab
-                    (activity as? MainActivity)?.selectCategoryTab()
+                    //(activity as? MainActivity)?.selectCategoryTab()
                 }
                 .show()
         }
@@ -74,6 +75,15 @@ class CheckoutFragment : Fragment() {
             }
             summaryBuilder.append("\nTotal: $%.2f".format(total))
             summaryTextView.text = summaryBuilder.toString()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Eğer hala cart sekmesi aktifse, cart fragment'i göster
+        val mainActivity = activity as? MainActivity
+        if (mainActivity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.selectedItemId == R.id.nav_cart) {
+            mainActivity.showFragment(CartFragment())
         }
     }
 }

@@ -23,7 +23,11 @@ class ProfileFragment : Fragment() {
     private lateinit var adapter: ProfileAdapter
     private var userInfo = mutableListOf<Pair<String, String>>() // Pair(field, value)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         recyclerView = view.findViewById(R.id.recyclerViewProfile)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -31,10 +35,12 @@ class ProfileFragment : Fragment() {
         // Load user info from SharedPreferences
         val prefs = activity?.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val username = prefs?.getString("username", "Guest") ?: "Guest"
+        val deviceToken = Dengage.getToken() ?: ""
+        val deviceId = Dengage.getSubscription()?.deviceId ?: ""
         userInfo = mutableListOf(
             "Username" to username,
-            "Email" to "",
-            "Phone" to ""
+            "Device Token" to deviceToken,
+            "Device Id" to deviceId
         )
 
         adapter = ProfileAdapter(userInfo) { field, value ->
@@ -86,10 +92,12 @@ class ProfileAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == TYPE_INFO) {
-            val view = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_2, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(android.R.layout.simple_list_item_2, parent, false)
             InfoViewHolder(view)
         } else {
-            val view = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_1, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(android.R.layout.simple_list_item_1, parent, false)
             LogoutViewHolder(view)
         }
     }
@@ -125,7 +133,25 @@ class ProfileAdapter(
     inner class InfoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(android.R.id.text1)
         val subtitle: TextView = itemView.findViewById(android.R.id.text2)
+
+        init {
+            subtitle.setOnLongClickListener {
+                val text = subtitle.text.toString()
+                val clipboard =
+                    itemView.context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                val clip = android.content.ClipData.newPlainText("Copied Text", text)
+                clipboard.setPrimaryClip(clip)
+
+                android.widget.Toast.makeText(
+                    itemView.context,
+                    "Copied: $text",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+                true
+            }
+        }
     }
+
 
     inner class LogoutViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(android.R.id.text1)

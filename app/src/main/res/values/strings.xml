@@ -56,4 +56,8 @@
     <string name="product_list">Product List</string>
     <string name="cart_list">Cart List</string>
     <string name="place_order">Place Order</string>
+    <string name="categories">Categories</string>
+    <string name="cart">Cart</string>
+    <string name="profile">Profile</string>
+    <string name="home">Home</string>
 </resources>

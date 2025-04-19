@@ -77,14 +77,23 @@ data class CartItem(val product: Product, var quantity: Int)
 
 object CartManager {
     private lateinit var sharedPreferences: SharedPreferences
-    private val cartItems = mutableListOf<CartItem>()
     private val gson = Gson()
-    private const val CART_KEY = "cart_items"
+    private val cartItems = mutableListOf<CartItem>()
+    private var currentUsername: String? = null
 
-    fun init(context: Context) {
+    /** Call this *after* a successful login */
+    fun init(context: Context, username: String) {
         sharedPreferences = context.getSharedPreferences("CartPrefs", Context.MODE_PRIVATE)
+        currentUsername = username
         loadCart()
     }
+
+    /** Call this when the user logs out */
+    fun logout() {
+        cartItems.clear()
+        currentUsername = null
+    }
+
 
     fun addProduct(product: Product, quantity: Int) {
         val existing = cartItems.find { it.product.id == product.id }
@@ -101,29 +110,39 @@ object CartManager {
         saveCart()
     }
 
+    /** *Manual* clear (e.g. “Empty cart” button). This also wipes the saved JSON. */
     fun clearCart() {
         cartItems.clear()
         saveCart()
     }
 
-    fun getItems(): MutableList<CartItem> = cartItems
+    fun getItems(): List<CartItem> = cartItems
 
-    fun getTotalItemCount(): Int {
-        return cartItems.sumOf { it.quantity }
-    }
+    fun getTotalItemCount(): Int = cartItems.sumOf { it.quantity }
+
+    // ——— Internal persistence ———
+
+    private fun keyForUser(): String =
+        "cart_items_${currentUsername ?: "unknown"}"
 
     private fun saveCart() {
-        val json = gson.toJson(cartItems)
-        sharedPreferences.edit() { putString(CART_KEY, json) }
+        currentUsername?.let { user ->
+            val json = gson.toJson(cartItems)
+            sharedPreferences.edit {
+                putString(keyForUser(), json)
+            }
+        }
     }
 
     private fun loadCart() {
-        val json = sharedPreferences.getString(CART_KEY, null)
-        if (!json.isNullOrEmpty()) {
-            val type = object : TypeToken<MutableList<CartItem>>() {}.type
-            val savedCart: MutableList<CartItem> = gson.fromJson(json, type)
-            cartItems.clear()
-            cartItems.addAll(savedCart)
+        cartItems.clear()
+        currentUsername?.let {
+            val json = sharedPreferences.getString(keyForUser(), null)
+            if (!json.isNullOrEmpty()) {
+                val type = object : TypeToken<MutableList<CartItem>>() {}.type
+                val saved: MutableList<CartItem> = gson.fromJson(json, type)
+                cartItems.addAll(saved)
+            }
         }
     }
 }

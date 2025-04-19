@@ -1,6 +1,7 @@
 package com.dengage.dengageecommercetest
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,6 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.content.Intent
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,17 +22,23 @@ class CartFragment : Fragment() {
     private lateinit var adapter: CartAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        val prefs = activity?.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val username = prefs?.getString("username", "Guest") ?: "Guest"
+
         val view = inflater.inflate(R.layout.fragment_cart, container, false)
         recyclerView = view.findViewById(R.id.recyclerViewCart)
         totalTextView = view.findViewById(R.id.textTotal)
         checkoutButton = view.findViewById(R.id.btnCheckout)
 
         recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = CartAdapter(CartManager.getItems()) { product ->
+        CartManager.init(requireContext(), username)
+
+        adapter = CartAdapter(CartManager.getItems().toMutableList()) { product ->
             // Remove item from cart callback
             CartManager.removeProduct(product)
             updateTotal()
-            adapter.updateItems(CartManager.getItems())
+            adapter.updateItems(CartManager.getItems().toMutableList())
             (activity as? MainActivity)?.updateCartBadge(CartManager.getTotalItemCount())
         }
         recyclerView.adapter = adapter

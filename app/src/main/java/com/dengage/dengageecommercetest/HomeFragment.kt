@@ -41,49 +41,13 @@ class HomeFragment : Fragment() {
             activity = requireActivity()
         )
 
-        // wrap_content force fix
-        webview.post {
-            val lp = webview.layoutParams
-            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            webview.layoutParams = lp
-            webview.requestLayout()
-        }
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         storiesListView = view.findViewById(R.id.storiesListView)
         webview = view.findViewById(R.id.webview)
-
-
-        /*
-        view.post {
-            // Stories yüklemesi
-            Dengage.showStoriesList(
-                screenName = "home",
-                storiesListView = storiesListView,
-                storyPropertyId = "story",
-                activity = requireActivity()
-            )
-
-            // Inline kampanya yüklemesi
-            Dengage.showInlineInApp(
-                screenName = "home",
-                inAppInlineElement = webview,
-                propertyId = "inline",
-                activity = requireActivity()
-            )
-
-            // wrap_content fix
-            webview.post {
-                val layoutParams = webview.layoutParams
-                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                webview.layoutParams = layoutParams
-            }
-        }
-         */
     }
 
 }

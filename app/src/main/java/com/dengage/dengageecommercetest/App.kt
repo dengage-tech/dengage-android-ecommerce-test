@@ -3,8 +3,6 @@ package com.dengage.dengageecommercetest
 import android.app.Application
 import android.content.Context
 import com.dengage.dengageecommercetest.data.CartManager
-import com.dengage.geofence.DengageGeofence
-//import com.dengage.hms.DengageHmsManager
 import com.dengage.sdk.Dengage
 import com.dengage.sdk.data.remote.api.DeviceConfigurationPreference
 import com.dengage.sdk.data.remote.api.NotificationDisplayPriorityConfiguration
@@ -18,7 +16,9 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        CartManager.init(this)
+        val prefs = applicationContext?.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val username = prefs?.getString("username", "Guest") ?: "Guest"
+        CartManager.init(applicationContext, username)
 
         registerActivityLifecycleCallbacks(DengageLifecycleTracker())
 

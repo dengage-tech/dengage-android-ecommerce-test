@@ -1,5 +1,6 @@
 package com.dengage.dengageecommercetest
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,12 +12,14 @@ import android.widget.TextView
 import android.view.Gravity
 import androidx.appcompat.app.AlertDialog
 import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dengage.dengageecommercetest.data.CartManager
 import com.dengage.sdk.Dengage
-
+import androidx.core.content.edit
 
 class ProfileFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
@@ -104,6 +107,7 @@ class ProfileAdapter(
 
     override fun getItemCount(): Int = items.size + 1 // Additional row for logout
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is InfoViewHolder && position < items.size) {
             val (field, value) = items[position]
@@ -121,8 +125,11 @@ class ProfileAdapter(
                 val context = holder.itemView.context
                 val prefs = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
                 Dengage.setContactKey("")
-                CartManager.clearCart()
-                prefs.edit().clear().apply()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    Dengage.getInAppMessages()
+                }, 2000)
+                CartManager.logout()
+                prefs.edit() { clear() }
                 val intent = Intent(context, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 context.startActivity(intent)

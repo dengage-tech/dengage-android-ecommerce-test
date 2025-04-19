@@ -29,8 +29,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         Dengage.requestNotificationPermission(this)
-
         val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+
         val isLoggedIn = prefs.getBoolean("isLoggedIn", false)
         if (!isLoggedIn) {
             val intent = Intent(this, LoginActivity::class.java)
@@ -38,7 +38,8 @@ class MainActivity : AppCompatActivity() {
             finish()
             return
         }
-
+        val username  = prefs.getString("username", "Guest") ?: "Guest"
+        CartManager.init(applicationContext, username)
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
 
